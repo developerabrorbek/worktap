@@ -1,3 +1,3 @@
-export * from "./user.service"
-export * from './user.controller'
-export * from './user.module'
+export * from './work.service';
+export * from './work.controller';
+export * from './work.module';

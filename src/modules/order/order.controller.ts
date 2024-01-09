@@ -30,7 +30,7 @@ export class OrderController {
 
   @Get('/all')
   async getAllOrders(): Promise<Order[]> {
-    return this.#_service.getAllOrders();
+    return await this.#_service.getAllOrders();
   }
 
   @CheckAuth(true)
@@ -60,11 +60,11 @@ export class OrderController {
     @Req() req: any,
     @Body() payload: CreateOrderDto,
   ): Promise<void> {
-    this.#_service.createOrder({ ...payload, files }, req.userId);
+    await this.#_service.createOrder({ ...payload, files }, req.userId);
   }
 
   @Delete('/delete/:id')
   async deleteOrder(@Param('id') orderId: string): Promise<void> {
-    this.#_service.deleteOrder(orderId);
+    await this.#_service.deleteOrder(orderId);
   }
 }

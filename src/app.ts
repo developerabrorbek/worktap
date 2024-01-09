@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { AuthModule, CategoryModule, DemoModule, OrderModule } from './modules';
+import { AuthModule, CategoryModule, DemoModule, OrderModule, WorkModule } from './modules';
 import { join } from 'path';
 import { ConfigModule } from '@nestjs/config';
 import { JWTConfig, databaseConfig } from '@config';
@@ -24,6 +24,7 @@ import { JwtModule } from '@nestjs/jwt';
     DemoModule,
     CategoryModule,
     OrderModule,
+    WorkModule,
   ],
   providers: [
     {
