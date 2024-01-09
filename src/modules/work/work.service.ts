@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { Work } from '@prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateWorkRequest } from './interfaces';
@@ -12,7 +12,11 @@ export class WorkService {
   }
 
   async getAllWorks(): Promise<Work[]> {
-    return await this.#_prisma.work.findMany();
+    return await this.#_prisma.work.findMany({
+      include: {
+        user: true,
+      }
+    });
   }
 
   async getUserWorks(userId: string): Promise<Work[]> {
@@ -22,8 +26,11 @@ export class WorkService {
 
   async createWork(payload: CreateWorkRequest, userId: string): Promise<void> {
     await this.#_checkUser(userId);
+    if(!payload.image?.path){
+      throw new ConflictException("Please provide an image")
+    }
 
-    const imagePath = payload.image.replace('\\', '/').replace('\\', '/');
+    const imagePath = payload.image.path.replace('\\', '/').replace('\\', '/');
 
     await this.#_prisma.work.create({
       data: {

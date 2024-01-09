@@ -12,7 +12,11 @@ export class OrderService {
   }
 
   async getAllOrders(): Promise<Order[]> {
-    return await this.#_prisma.order.findMany();
+    return await this.#_prisma.order.findMany({
+      include: {
+        user: true,
+      }
+    });
   }
 
   async getUserOrders(userId: string): Promise<Order[]> {
