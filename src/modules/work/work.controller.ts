@@ -64,7 +64,7 @@ export class WorkController {
   }
 
   @Delete('/delete/:id')
-  async deleteWork(@Param('id') orderId: string): Promise<void> {
-    await this.#_service.deleteWork(orderId);
+  async deleteWork(@Param('id') workId: string): Promise<void> {
+    await this.#_service.deleteWork(workId);
   }
 }

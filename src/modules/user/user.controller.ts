@@ -1,45 +1,48 @@
 import {
+  Body,
   Controller,
+  Delete,
+  Get,
+  Param,
   Post,
+  Req,
   UploadedFile,
-  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { Express } from 'express';
-import { DemoService } from './user.service';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { UserService } from './user.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { User } from '@prisma/client';
+import { CheckAuth } from '@decorators';
+import { ApiTags } from '@nestjs/swagger';
+import { UpdateUserDto } from './dtos';
 
-@Controller('demo')
-export class DemoController {
-  #_service: DemoService;
-  constructor(service: DemoService) {
+@ApiTags('User')
+@Controller('user')
+export class UserController {
+  #_service: UserService;
+
+  constructor(service: UserService) {
     this.#_service = service;
   }
 
-  @Post('upload')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, cb) => {
-          const randomName = Array(32)
-            .fill(null)
-            .map(() => Math.round(Math.random() * 16).toString(16))
-            .join('');
-          cb(null, `${randomName}${extname(file.originalname)}`);
-        },
-      }),
-    }),
-  )
-  async uploadSingle(@UploadedFile() file: Express.Multer.File) {
-    console.log(file, 'controller');
+  @Get('/all')
+  async getAllUsers(): Promise<User[]> {
+    return await this.#_service.getAllUsers();
   }
 
-  @Post('uploads')
+  @CheckAuth(true)
+  @Get('/single')
+  async getSingleUser(@Req() req: any): Promise<User> {
+    return await this.#_service.getSingleUser(req.userId);
+  }
+
+  @CheckAuth(true)
+  @Post('/edit/:id')
   @UseInterceptors(
-    FilesInterceptor('files', 10,{
+    FileInterceptor('image', {
       storage: diskStorage({
         destination: './uploads',
         filename: (req, file, cb) => {
@@ -52,7 +55,16 @@ export class DemoController {
       }),
     }),
   )
-  async uploadMax(@UploadedFiles() files: Array<Express.Multer.File>) {
-    console.log(files, 'controller');
+  async updateuser(
+    @UploadedFile() image: Express.Multer.File,
+    @Body() payload: UpdateUserDto,
+    @Param('id') userId: string,
+  ): Promise<void> {
+    await this.#_service.updateUser({ ...payload, image }, userId);
+  }
+
+  @Delete('/delete/:id')
+  async deleteUser(@Param('id') userId: string): Promise<void> {
+    await this.#_service.deleteUser(userId);
   }
 }

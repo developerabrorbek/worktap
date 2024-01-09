@@ -33,7 +33,6 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
-
     const request = context.switchToHttp().getRequest<any>();
 
     const token = request.headers.authorization;
@@ -47,6 +46,7 @@ export class AuthGuard implements CanActivate {
     }
 
     const accessToken = token.replace('Bearer ', '');
+
 
     if (!accessToken) {
       throw new ConflictException('Please provide a bearer token');
