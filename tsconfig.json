@@ -12,7 +12,8 @@
     "baseUrl": "./src",
     "paths": {
       "@modules": ["./modules"],
-      "@prisma": ["./prisma"]
+      "@prisma": ["./prisma"],
+      "@config": ["./config"],
     },
     "incremental": true,
     "skipLibCheck": true,
