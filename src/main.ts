@@ -23,7 +23,6 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Worktap API')
     .setDescription('The worktap API description')
-    .addBearerAuth()
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);

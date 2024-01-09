@@ -14,6 +14,9 @@
       "@modules": ["./modules"],
       "@prisma": ["./prisma"],
       "@config": ["./config"],
+      "@decorators": ["./decorators"],
+      "@filters": ["./filters"],
+      "@guard": ["./guard"]
     },
     "incremental": true,
     "skipLibCheck": true,
