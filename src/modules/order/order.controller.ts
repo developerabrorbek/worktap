@@ -17,7 +17,9 @@ import { extname } from 'path';
 import { Order } from '@prisma/client';
 import { CheckAuth } from '@decorators';
 import { CreateOrderDto } from './dtos';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags("Order")
 @Controller('order')
 export class OrderController {
   #_service: OrderService;
