@@ -53,7 +53,7 @@ export class AuthGuard implements CanActivate {
     }
     try {
       const data = this.jwt.verify(accessToken, {
-        secret: this.config.getOrThrow<string>('jwt.accessKey'),
+        secret: this.config.getOrThrow<string>('jwt.accessTokenSecretKey'),
       });
       request.userId = data.id
       return true;

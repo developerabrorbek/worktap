@@ -49,8 +49,8 @@ export class AuthService {
       },
     });
 
-    const accessToken = this.#_createAccessToken(foundedUser.id);
-    const refreshToken = this.#_createRefreshToken(foundedUser.id);
+    const accessToken = await this.#_createAccessToken(foundedUser.id);
+    const refreshToken = await this.#_createRefreshToken(foundedUser.id);
 
     if (foundedUserDevice) {
       await this.#_prisma.userDevice.update({
@@ -74,7 +74,6 @@ export class AuthService {
         userId: foundedUser.id,
         userAgent: payload.userAgent,
         ip: payload.ip,
-        deletedAt: null,
       },
     });
 
@@ -98,8 +97,8 @@ export class AuthService {
         where: { ip: payload.ip, userAgent: payload.userAgent },
       });
 
-      const accessToken = this.#_createAccessToken(data.id);
-      const refreshToken = this.#_createRefreshToken(data.id);
+      const accessToken = await this.#_createAccessToken(data.id);
+      const refreshToken = await this.#_createRefreshToken(data.id);
 
       await this.#_prisma.userDevice.update({
         where: { id: userDevice.id },
@@ -135,12 +134,11 @@ export class AuthService {
       },
     });
 
-    const accessToken = this.#_createAccessToken(newUser.id);
-    const refreshToken = this.#_createRefreshToken(newUser.id);
+    const accessToken = await this.#_createAccessToken(newUser.id);
+    const refreshToken = await this.#_createRefreshToken(newUser.id);
 
     await this.#_prisma.userDevice.create({
       data: {
-        deletedAt: null,
         ip: payload.ip,
         userAgent: payload.userAgent,
         userId: newUser.id,
@@ -168,14 +166,13 @@ export class AuthService {
       throw new NotFoundException('User device not found');
     }
 
-    await this.#_prisma.userDevice.update({
+    await this.#_prisma.userDevice.delete({
       where: { id: foundedUserDevice.id },
-      data: { deletedAt: new Date().toISOString() },
     });
   }
 
-  #_createAccessToken(userId: string): string {
-    const accessToken = this.#_jwt.sign(
+  async #_createAccessToken(userId: string): Promise<string> {
+    const accessToken = await this.#_jwt.sign(
       { id: userId },
       {
         secret: this.#_config.getOrThrow<string>('jwt.accessTokenSecretKey'),
@@ -187,8 +184,8 @@ export class AuthService {
     return accessToken;
   }
 
-  #_createRefreshToken(userId: string): string {
-    const refreshToken = this.#_jwt.sign(
+  async #_createRefreshToken(userId: string): Promise<string> {
+    const refreshToken = await this.#_jwt.sign(
       { id: userId },
       {
         secret: this.#_config.getOrThrow<string>('jwt.refreshTokenSecretKey'),

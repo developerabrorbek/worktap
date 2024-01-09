@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Headers, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LoginDto, LogoutDto, RefreshDto, RegisterDto } from './dtos';
-import { LoginResponse } from './interfaces';
+import { LoginResponse, RegisterResponse } from './interfaces';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -14,8 +14,8 @@ export class AuthController {
   }
 
   @Post('/register')
-  async register(@Body() payload: RegisterDto): Promise<void> {
-    await this.#_service.register(payload);
+  async register(@Body() payload: RegisterDto): Promise<RegisterResponse> {
+    return await this.#_service.register(payload);
   }
 
   @Post('/login')
