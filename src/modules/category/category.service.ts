@@ -27,6 +27,9 @@ export class CategoryService {
         category: null,
         parentId: null,
       },
+      include: {
+        subcategory: true
+      }
     });
 
     return data;
